@@ -1,3 +1,4 @@
+from selfdrive.ntune import nTune
 import numpy as np
 from selfdrive.controls.lib.drive_helpers import get_steer_max
 from common.numpy_fast import clip
@@ -25,6 +26,7 @@ class LatControlLQR():
     self.sat_limit = CP.steerLimitTimer
 
     self.reset()
+    self.tune = nTune(CP, self) # 추가
 
   def reset(self):
     self.i_lqr = 0.0
@@ -45,6 +47,7 @@ class LatControlLQR():
 
   def update(self, active, CS, CP, path_plan):
     lqr_log = log.ControlsState.LateralLQRState.new_message()
+    self.tune.check() # 추가
 
     steers_max = get_steer_max(CP, CS.vEgo)
     torque_scale = (0.45 + CS.vEgo / 60.0)**2  # Scale actuator model with speed

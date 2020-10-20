@@ -22,7 +22,7 @@
   "steerActuatorDelay": 0.3,
   "steerLimitTimer": 0.4,
   "steerOffset": 0.0,
-  "steerRateCost": 0.45,
+  "steerRateCost": 0.55,
   "steerRatio": 14.5,
   "tire_stiffness_factor": 1.0
 }
