@@ -105,7 +105,7 @@ class PathPlanner():
 
   def setup_mpc(self):
     self.libmpc = libmpc_py.libmpc
-    self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, self.steer_rate_cost_prev)
+    self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, self.steer_rate_cost)
 
     self.mpc_solution = libmpc_py.ffi.new("log_t *")
     self.cur_state = libmpc_py.ffi.new("state_t *")
