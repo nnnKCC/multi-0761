@@ -31,7 +31,7 @@ class AtomConf():
     self.cameraOffset = 0.06
     self.steerOffset = 0.0
     self.steerRatio = 12.5
-    self.steerRateCost = 0.4
+    self.steerRateCost = 0.55
     self.tire_stiffness_factor = 1.0
     self.steerActuatorDelay = 0.1
     self.steerLimitTimer = 0.4
