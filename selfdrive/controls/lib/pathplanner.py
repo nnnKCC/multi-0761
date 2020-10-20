@@ -272,13 +272,7 @@ class PathPlanner():
 
     self.angle_steers_des_mpc = float(math.degrees(delta_desired * VM.sR) + angle_offset)
     org_angle_steers_des = self.angle_steers_des_mpc
-
-    if self.steer_rate_cost_prev != steerRateCost: #락 추가
-      self.steer_rate_cost_prev = steerRateCost
-
-      self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, steerRateCost)
-      self.cur_state[0].delta = math.radians(angle_steers - angle_offset) / VM.sR #락 추가
-
+   
     # atom
     if v_ego_kph < 30:
         xp = [5,15,30]
