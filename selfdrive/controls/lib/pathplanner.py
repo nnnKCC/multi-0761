@@ -12,6 +12,7 @@ import cereal.messaging as messaging
 from cereal import log
 from selfdrive.car.hyundai.interface import CarInterface
 import common.log as trace1
+from selfdrive.ntune import ntune_get
 
 
 
@@ -173,6 +174,7 @@ class PathPlanner():
     # Run MPC
     self.angle_steers_des_prev = self.angle_steers_des_mpc
     VM.update_params(stiffnessFactor, self.atom_steer_ratio ) # sm['liveParameters'].steerRatio)
+    VM.sR = ntune_get('steerRatio') # 추가
     curvature_factor = VM.curvature_factor(v_ego)
 
 
@@ -253,7 +255,7 @@ class PathPlanner():
     self.LP.update_d_poly(v_ego)
 
     # account for actuation delay
-    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, CP.steerActuatorDelay)
+    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, ntune_get('steerActuatorDelay'))
 
     v_ego_mpc = max(v_ego, 5.0)  # avoid mpc roughness due to low speed
     self.libmpc.run_mpc(self.cur_state, self.mpc_solution,
