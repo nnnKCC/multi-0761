@@ -12,8 +12,6 @@ import cereal.messaging as messaging
 from cereal import log
 from selfdrive.car.hyundai.interface import CarInterface
 import common.log as trace1
-from selfdrive.ntune import ntune_get
-
 
 
 
@@ -174,7 +172,6 @@ class PathPlanner():
     # Run MPC
     self.angle_steers_des_prev = self.angle_steers_des_mpc
     VM.update_params(stiffnessFactor, self.atom_steer_ratio ) # sm['liveParameters'].steerRatio)
-    VM.sR = ntune_get('steerRatio') # 추가
     curvature_factor = VM.curvature_factor(v_ego)
 
 

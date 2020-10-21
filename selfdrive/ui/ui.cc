@@ -982,7 +982,7 @@ int main(int argc, char* argv[]) {
       default: nParamRead = 0; break;
     }
 
-    int nTimeOff = scene.params.nOpkrAutoScreenOff * 60;
+    int nTimeOff = scene.params.nOpkrAutoScreenOff * 10; #락 60
     if( nAwakeTime != nTimeOff )
     {
         nAwakeTime = nTimeOff;
