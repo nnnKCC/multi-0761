@@ -294,7 +294,7 @@ class PathPlanner():
 
     # 여기부터 추가
 
-    elif v_ego_kph < 15:  # 30
+    if v_ego_kph < 15:  # 30
     # 저속 와리가리 제어.  
       debug_status = 3
       xp = [5,10,15]
