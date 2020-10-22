@@ -43,9 +43,14 @@ def calc_d_poly(l_poly, r_poly, p_poly, l_prob, r_prob, lane_width, v_ego):
 
   lr_prob = l_prob + r_prob - l_prob * r_prob
 
+  # 양민
+  if lr_prob > 0.7: # 차선추종 강화 로직
+    lr_prob = max(0.95, lr_prob)
+  elif lr_prob > 0.575 and l_prob > 0.2 and r_prob > 0.2 :
+    lr_prob = max(0.875, lr_prob)
+
   d_poly_lane = (l_prob * path_from_left_lane + r_prob * path_from_right_lane) / (l_prob + r_prob + 0.0001)
   return lr_prob * d_poly_lane + (1.0 - lr_prob) * p_poly
-
 
 class LanePlanner():
   def __init__(self):
@@ -54,9 +59,9 @@ class LanePlanner():
     self.p_poly = [0., 0., 0., 0.]
     self.d_poly = [0., 0., 0., 0.]
 
-    self.lane_width_estimate = 2.7
+    self.lane_width_estimate = 3.7
     self.lane_width_certainty = 1.0
-    self.lane_width = 2.7
+    self.lane_width = 3.7
 
     self.l_prob = 0.
     self.r_prob = 0.
@@ -92,7 +97,7 @@ class LanePlanner():
     self.lane_width_certainty += 0.05 * (self.l_prob * self.r_prob - self.lane_width_certainty)
     current_lane_width = abs(self.l_poly[3] - self.r_poly[3])
     self.lane_width_estimate += 0.005 * (current_lane_width - self.lane_width_estimate)
-    speed_lane_width = interp(v_ego, [0., 31.], [2.5, 3.2])
+    speed_lane_width = interp(v_ego, [0., 31.], [2.8, 3.5])
     self.lane_width = self.lane_width_certainty * self.lane_width_estimate + \
                       (1 - self.lane_width_certainty) * speed_lane_width
 
