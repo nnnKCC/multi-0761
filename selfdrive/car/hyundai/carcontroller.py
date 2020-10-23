@@ -358,7 +358,7 @@ class CarController():
         can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.RES_ACCEL, clu11_speed))
         self.resume_cnt += 1
 
-        if self.resume_cnt > 100:
+        if self.resume_cnt > 1:
           self.resume_cnt = 0
           self.resume_wait_timer = 0
 
