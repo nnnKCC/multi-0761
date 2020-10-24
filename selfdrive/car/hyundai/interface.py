@@ -81,7 +81,7 @@ class CarInterface(CarInterfaceBase):
 
     tire_stiffness_factor = 1.
     ret.steerActuatorDelay = 0.3  # Default delay
-    ret.steerRateCost = 0.55 #락 ret.steerRateCost = 0.55
+    ret.steerRateCost = 0.8 #락 ret.steerRateCost = 0.55
     ret.steerLimitTimer = 0.8
 
     if candidate in [CAR.GRANDEUR_HEV, CAR.K7_HEV]:
