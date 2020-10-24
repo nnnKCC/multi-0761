@@ -5,7 +5,7 @@ from selfdrive.atom_conf import AtomConf
 
 ATOMC = AtomConf()
 
-CAMERA_OFFSET = 0.10  # m from center car to camera
+CAMERA_OFFSET = 0.00  # m from center car to camera
 
 def compute_path_pinv(l=50):
   deg = 3
@@ -97,7 +97,7 @@ class LanePlanner():
     self.lane_width_certainty += 0.05 * (self.l_prob * self.r_prob - self.lane_width_certainty)
     current_lane_width = abs(self.l_poly[3] - self.r_poly[3])
     self.lane_width_estimate += 0.005 * (current_lane_width - self.lane_width_estimate)
-    speed_lane_width = interp(v_ego, [0., 31.], [2.7, 3.2])
+    speed_lane_width = interp(v_ego, [0., 31.], [3.0, 3.5])
     self.lane_width = self.lane_width_certainty * self.lane_width_estimate + \
                       (1 - self.lane_width_certainty) * speed_lane_width
 
