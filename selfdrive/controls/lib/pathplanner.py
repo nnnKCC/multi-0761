@@ -1,6 +1,7 @@
 import os
 import math
 from common.realtime import sec_since_boot, DT_MDL
+from selfdrive.ntune import ntune_get
 from selfdrive.swaglog import cloudlog
 from selfdrive.controls.lib.lateral_mpc import libmpc_py
 from selfdrive.controls.lib.drive_helpers import MPC_COST_LAT
@@ -62,8 +63,7 @@ class PathPlanner():
 
     self.last_cloudlog_t = 0
     self.steer_rate_cost = CP.steerRateCost
-    self.steerRatio = CP.steerRatio    
-    
+    self.steerRatio = CP.steerRatio
 
     self.setup_mpc()
     self.solution_invalid_cnt = 0
@@ -163,18 +163,15 @@ class PathPlanner():
       boost_rate = interp(abs(angle_steers), self.atom_sr_boost_bp, self.atom_sr_boost_range)
       self.atom_steer_ratio = self.steerRatio + boost_rate
 
-
-
       str_log1 = 'steerRatio={:.1f}/{:.1f} bp={} range={}'.format( self.steerRatio, CP.steerRatio, self.atom_sr_boost_bp, self.atom_sr_boost_range )
       str_log2 = 'steerRateCost={:.2f}'.format( self.steer_rate_cost )
       self.trPATH.add( '{} {}'.format( str_log1, str_log2 ) )
-      
+
 
     # Run MPC
     self.angle_steers_des_prev = self.angle_steers_des_mpc
     VM.update_params(stiffnessFactor, self.atom_steer_ratio ) # sm['liveParameters'].steerRatio)
     curvature_factor = VM.curvature_factor(v_ego)
-
 
 
     self.LP.parse_model(sm['model'])
@@ -263,8 +260,10 @@ class PathPlanner():
       self.LP.r_prob *= self.lane_change_ll_prob
     self.LP.update_d_poly(v_ego)
 
+    steerActuatorDelay = ntune_get('steerActuatorDelay')
+
     # account for actuation delay
-    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, CP.steerActuatorDelay)
+    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, steerActuatorDelay)
 
     v_ego_mpc = max(v_ego, 5.0)  # avoid mpc roughness due to low speed
     self.libmpc.run_mpc(self.cur_state, self.mpc_solution,
