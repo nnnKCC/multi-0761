@@ -675,27 +675,6 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     bb_ry = bb_y + bb_h;
   }*/
   
-  //add grey panda GPS accuracy
-  if (true) {
-    char val_str[16];
-    char uom_str[3];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    //show red/orange if gps accuracy is high
-      if(scene->gpsAccuracy > 1.0) {
-         val_color = nvgRGBA(255, 188, 3, 200);
-      }
-      if(scene->gpsAccuracy > 1.5) {
-         val_color = nvgRGBA(255, 0, 0, 200);
-      }
-    // gps accuracy is always in meters
-    snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.gpsAccuracy));
-    snprintf(uom_str, sizeof(uom_str), "m");;
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "GPS정확도",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
 
   //finally draw the frame
   bb_h += 20;
@@ -705,6 +684,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   nvgStrokeWidth(s->vg, 6);
   nvgStroke(s->vg);
 }
+
 
 static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w ) {
   const UIScene *scene = &s->scene;
@@ -841,67 +821,6 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     nvgStroke(s->vg);
 }
 
-static void bb_ui_draw_debug(UIState *s)
-{
-    const UIScene *scene = &s->scene;
-
-    char str[1024];
-
-    snprintf(str, sizeof(str), "SR: %.2f, SRC: %.3f, SAD: %.3f", scene->path_plan.getSteerRatio(),
-                                                        scene->path_plan.getSteerRateCost(),
-                                                        scene->path_plan.getSteerActuatorDelay());
-
-    int x = scene->viz_rect.x + (bdr_s * 2);
-    int y = scene->viz_rect.bottom() - 24;
-
-    nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
-
-    ui_draw_text(s->vg, x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_semibold);
-
-    int w = 184;
-    int x = (s->scene.viz_rect.x + (bdr_s*2)) + 220;
-    int y = 100;
-    int xo = 180;
-    int height = 70;
-    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-    const int text_x = x + (xo / 2) + (w / 2);
-    char str[1024];
-    auto lqr = scene->controls_state.getLateralControlState().getLqrState();
-    snprintf(str, sizeof(str), "I: %.3f", lqr.getI());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "LQR: %.3f", lqr.getLqrOutput());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "O: %.3f, %.0f", lqr.getOutput(), scene->controls_state.getApplySteer());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);*/
-
-    y += height;
-    snprintf(str, sizeof(str), "ST: %.3f", scene->car_state.getSteeringTorque());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-
-    y += height;
-    snprintf(str, sizeof(str), "CURV: %.3f", scene->pCurvature * 1000.);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-
-    y += height;
-    snprintf(str, sizeof(str), "Angle: %.3f, %.3f", scene->liveParams.getAngleOffset(),
-            scene->liveParams.getAngleOffsetAverage());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-
-    y += height;
-    snprintf(str, sizeof(str), "S Rate: %.2f", scene->path_plan.getSteerRatio());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "S R Cost: %.2f", scene->path_plan.getSteerRateCost());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "S A Delay: %.2f", scene->path_plan.getSteerActuatorDelay());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "Lane: %.2f, %.2f", scene->path_plan.getLProb(), scene->path_plan.getRProb());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-}
 
 static void bb_ui_draw_UI(UIState *s)
 {
@@ -918,6 +837,8 @@ static void bb_ui_draw_UI(UIState *s)
   bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
 }
 //BB END: functions added for the display of various items
+
+
 
 static void ui_draw_vision_maxspeed(UIState *s) {
   /*if (!s->longitudinal_control){
